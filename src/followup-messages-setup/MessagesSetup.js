@@ -13,7 +13,16 @@ const useStyles = makeStyles({
     marginBottom:'10px',
   },
   title: {
+    fontSize: 20,
+    fontWeight: 700,
+  },
+  from_to: {
     fontSize: 14,
+    padding: '10px'
+  },
+  message: {
+    fontSize: 20,
+    padding: '10px'
   },
 });
 
@@ -24,25 +33,32 @@ export default function MessagesSetup(props) {
     <Card className={classes.card}>
       <CardContent>
         <Grid container>
-          <Grid>
-            <Typography className={classes.title} gutterBottom>
+          <Grid item xs={12}>
+            <Typography className={classes.title}>
               Bump {messageNumber}
             </Typography>
-            {/* <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Subject: {message.from}
-            </Typography>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Next followup on {message.message}
-            </Typography> */}
           </Grid>
-          {/* <Grid item xs={6}>
-            <Typography className={classes.title} gutterBottom>
-              Target: {followup.target}
+          <Grid item xs={12}>
+            <Typography>
+              If you don't receive a reply, this will be sent {message.followupAfter} days 
+              after {messageNumber == 1 ? 'Your Original Email' : `Bump ${messageNumber - 1}`}
             </Typography>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Type: {followup.type}
+          </Grid> 
+          <Grid xs={12}>
+            <Typography color="textSecondary" className={classes.from_to}>
+              To: {message.to} &nbsp;&nbsp;&nbsp;&nbsp; From: {message.from}
             </Typography>
-          </Grid>     */}
+          </Grid>
+          <Grid item xs={9}>
+            <Typography className={classes.message}>
+              {message.message}
+            </Typography>
+          </Grid>
+          <Grid xs={12}>
+            <Typography color="textSecondary" className={classes.from_to}>
+              Your original email will be here.
+            </Typography>
+          </Grid>  
         </Grid>
       </CardContent>
       <CardActions>

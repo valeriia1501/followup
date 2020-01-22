@@ -7,22 +7,26 @@ const MessagesSetupGroup = () => {
         {
           "to": "v.kovalkovska",
           "from": "You",
-          "message": "Hi - just wanted to make sure you got the email below. Thanks!"
+          "message": "Hi - just wanted to make sure you got the email below. Thanks!",
+          "followupAfter": "3"
         },
         {
           "to": "Peter",
           "from": "You",
-          "message": "Just checking in. Wanted to make sure you got my email."
+          "message": "Just checking in. Wanted to make sure you got my email.",
+          "followupAfter": "4"
         },
         {
           "to": "Ira",
           "from": "You",
-          "message": "Just trying you again. Would love to hear back from you."
+          "message": "Just trying you again. Would love to hear back from you.",
+          "followupAfter": "7"
         },
         {
           "to": "Paul",
           "from": "You",
-          "message": "Thought I'd try you just one more time."
+          "message": "Thought I'd try you just one more time.",
+          "followupAfter": "7"
         }
     ]
     return (
