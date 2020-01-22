@@ -16,7 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import CardOwn from './components/CardOwn.js';
+import FollowupsGroup from './followups/FollowupsGroup.js';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
 const drawerWidth = 240;
@@ -83,32 +83,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function App() {
-  const data = [
-    {
-      "from": "v.kovalkovska",
-      "subject": "Fill details form",
-      "target" : "Nick Bolton",
-      "type": "cc"
-    },
-    {
-      "from": "Bob Johnson",
-      "subject": "Fill form",
-      "target" : "Nick",
-      "type": "to"
-    },
-    {
-      "from": "Helen",
-      "subject": "Form",
-      "target" : "Ken",
-      "type": "bcc"
-    },
-    {
-      "from": "Emilia",
-      "subject": "Fill details form",
-      "target" : "Nick Bolton",
-      "type": "replyto"
-    }
-  ]
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -186,17 +160,7 @@ export default function App() {
           <div className={classes.toolbar} />
           <Switch>
               <Route path="/cards">     
-                {
-                  data.map(elem => {
-                      return <CardOwn 
-                              from={elem.from}
-                              subject={elem.subject}
-                              target={elem.target}
-                              type={elem.type}
-                              date='dd/mm/yyyy HH:MM'
-                              />
-                  })
-                }
+                <FollowupsGroup/>
               </Route>
           </Switch>    
         </main>

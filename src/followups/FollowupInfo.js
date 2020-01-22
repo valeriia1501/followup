@@ -17,30 +17,30 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CardOwn(props) {
+export default function FollowupInfo(props) {
   const classes = useStyles();
-  const {from, subject, target, type, date} = props;
+  const {followup} = props;
   return (
     <Card className={classes.card}>
       <CardContent>
         <Grid container>
           <Grid item xs={6}>
             <Typography className={classes.title} gutterBottom>
-              From: {from}
+              From: {followup.from}
             </Typography>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Subject: {subject}
+              Subject: {followup.subject}
             </Typography>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Next followup on {date}
+              Next followup on {followup.date}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.title} gutterBottom>
-              Target: {target}
+              Target: {followup.target}
             </Typography>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Type: {type}
+              Type: {followup.type}
             </Typography>
           </Grid>    
         </Grid>
