@@ -35,8 +35,9 @@ const FollowupsGroup = () => {
     return (
         <div>
             {
-                data.map(elem => {
+                data.map((elem, index) => {
                     return <FollowupInfo
+                        key={index}
                         followup={elem} 
                     />
                 })

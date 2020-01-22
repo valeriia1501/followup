@@ -17,6 +17,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import FollowupsGroup from './followups/FollowupsGroup.js';
+import MessagesSetupGroup from './followup-messages-setup/MessagesSetupGroup.js';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
 const drawerWidth = 240;
@@ -161,6 +162,9 @@ export default function App() {
           <Switch>
               <Route path="/cards">     
                 <FollowupsGroup/>
+              </Route>
+              <Route path="/messages-setup">     
+                <MessagesSetupGroup/>
               </Route>
           </Switch>    
         </main>
