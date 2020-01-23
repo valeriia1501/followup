@@ -6,6 +6,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const useStyles = makeStyles({
   card: {
@@ -29,32 +31,42 @@ const useStyles = makeStyles({
 export default function MessagesSetup(props) {
   const classes = useStyles();
   const {message, messageNumber} = props;
+  const [isEditing, setIsEditing] = React.useState(false);
   return (
     <Card className={classes.card}>
       <CardContent>
         <Grid container>
-          <Grid item xs={12}>
-            <Typography className={classes.title}>
-              Bump {messageNumber}
-            </Typography>
+          <Grid container justify="space-between">
+            <Grid>
+              <Typography className={classes.title}>
+                Bump {messageNumber}
+              </Typography>
+            </Grid>
+            <Grid>
+              <Button onClick={() => setIsEditing(true)} variant="contained" color="primary">
+                Edit
+              </Button>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
             <Typography>
               If you don't receive a reply, this will be sent {message.followupAfter} days 
-              after {messageNumber == 1 ? 'Your Original Email' : `Bump ${messageNumber - 1}`}
+              after {messageNumber === 1 ? 'Your Original Email' : `Followup ${messageNumber - 1}`}
             </Typography>
           </Grid> 
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <Typography color="textSecondary" className={classes.from_to}>
               To: {message.to} &nbsp;&nbsp;&nbsp;&nbsp; From: {message.from}
             </Typography>
           </Grid>
           <Grid item xs={9}>
-            <Typography className={classes.message}>
-              {message.message}
-            </Typography>
+            {/* {isEditing === true ? <div><Editor/><textarea value={message.message} cols='150' rows='10'></textarea></div> */}
+            {isEditing === true ? <div><Editor value={message.message}/></div>
+              : <Typography className={classes.message}>
+                  {message.message}
+                </Typography>}
           </Grid>
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <Typography color="textSecondary" className={classes.from_to}>
               Your original email will be here.
             </Typography>
@@ -62,7 +74,7 @@ export default function MessagesSetup(props) {
         </Grid>
       </CardContent>
       <CardActions>
-        {/* <Button size="small">Show More</Button> */}
+        
       </CardActions>
     </Card>
   );

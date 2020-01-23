@@ -1,9 +1,10 @@
 import React from 'react';
 import MessagesSetup from './MessagesSetup.js';
+import Button from '@material-ui/core/Button';
 
 const MessagesSetupGroup = () => {
     let messageNumber = 0;
-    const data = [
+    const dataArr = [
         {
           "to": "v.kovalkovska",
           "from": "You",
@@ -29,6 +30,20 @@ const MessagesSetupGroup = () => {
           "followupAfter": "7"
         }
     ]
+    const [data, setData] = React.useState(dataArr);
+
+    const newData = () => {
+      const newElem = {"to": "Paul", "from": "You", "message": "Thought I'd try you just one more time.", "followupAfter": "7"}
+      const newData = [...data, newElem]
+      return newData;
+    }
+
+    const addNewElem = () => {
+      setData(
+        newData()
+      )
+    };
+
     return (
         <div>
             {
@@ -39,7 +54,15 @@ const MessagesSetupGroup = () => {
                         messageNumber={++messageNumber} 
                     />
                 })
-            }   
+            } 
+            
+            <Button
+              onClick={addNewElem} 
+              variant="contained" 
+              color="primary">
+                + Add another followup
+            </Button>
+              
         </div>
     );
 }
