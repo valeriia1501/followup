@@ -6,8 +6,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import EditorConvertToJSON from './EditorConvertToJSON';
 
 const useStyles = makeStyles({
   card: {
@@ -30,8 +30,10 @@ const useStyles = makeStyles({
 
 export default function MessagesSetup(props) {
   const classes = useStyles();
-  const {message, messageNumber} = props;
+  const {message, messageNumber, update, key} = props;
   const [isEditing, setIsEditing] = React.useState(false);
+
+
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -61,7 +63,12 @@ export default function MessagesSetup(props) {
           </Grid>
           <Grid item xs={9}>
             {/* {isEditing === true ? <div><Editor/><textarea value={message.message} cols='150' rows='10'></textarea></div> */}
-            {isEditing === true ? <div><Editor value={message.message}/></div>
+            {isEditing === true ? <EditorConvertToJSON update={update} key={key}/> 
+                                  // <Editor 
+                                  //   wrapperClassName="demo-wrapper"
+                                  //   editorClassName="demo-editor"
+                                  // /> 
+                                                 
               : <Typography className={classes.message}>
                   {message.message}
                 </Typography>}

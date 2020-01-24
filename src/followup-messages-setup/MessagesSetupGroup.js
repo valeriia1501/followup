@@ -44,11 +44,27 @@ const MessagesSetupGroup = () => {
       )
     };
 
+    const updatedData = (editedText, key) => {
+      const updatedData = [...data];
+      updatedData[0].message = JSON.parse(editedText).blocks[0].text;
+      return updatedData;
+    }
+
+    const updateState = (editedText, key) => {
+      setData(
+        updatedData(editedText, key)
+      )
+      console.log(JSON.parse(editedText).blocks[0].text)
+      console.log(data)
+      console.log(key)
+    };
+
     return (
         <div>
             {
                 data.map((elem, index) => {
                     return <MessagesSetup
+                        update={updateState}
                         key={index}
                         message={elem}
                         messageNumber={++messageNumber} 
