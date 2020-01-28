@@ -44,19 +44,19 @@ const MessagesSetupGroup = () => {
       )
     };
 
-    const updatedData = (editedText, key) => {
+    const updatedData = (editedText, index) => {
       const updatedData = [...data];
-      updatedData[0].message = JSON.parse(editedText).blocks[0].text;
+      updatedData[index].message = editedText.slice(3, -5);
       return updatedData;
     }
 
-    const updateState = (editedText, key) => {
+    const updateState = (editedText, index) => {
       setData(
-        updatedData(editedText, key)
+        updatedData(editedText, index)
       )
-      console.log(JSON.parse(editedText).blocks[0].text)
+      // console.log(JSON.parse(editedText).blocks[0].text)
       console.log(data)
-      console.log(key)
+      console.log(index)
     };
 
     return (
@@ -65,6 +65,7 @@ const MessagesSetupGroup = () => {
                 data.map((elem, index) => {
                     return <MessagesSetup
                         update={updateState}
+                        index={index}
                         key={index}
                         message={elem}
                         messageNumber={++messageNumber} 

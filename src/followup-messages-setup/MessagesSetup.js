@@ -30,9 +30,12 @@ const useStyles = makeStyles({
 
 export default function MessagesSetup(props) {
   const classes = useStyles();
-  const {message, messageNumber, update, key} = props;
+  const {message, messageNumber, update, index} = props;
   const [isEditing, setIsEditing] = React.useState(false);
 
+  const closeEditor = () => {
+    setIsEditing(false)
+  };
 
   return (
     <Card className={classes.card}>
@@ -45,9 +48,10 @@ export default function MessagesSetup(props) {
               </Typography>
             </Grid>
             <Grid>
-              <Button onClick={() => setIsEditing(true)} variant="contained" color="primary">
-                Edit
-              </Button>
+              {isEditing === false ? <Button onClick={() => setIsEditing(true)} variant="contained" color="primary">
+                                      Edit
+                                    </Button>
+                                   :''}
             </Grid>
           </Grid>
           <Grid item xs={12}>
@@ -63,7 +67,7 @@ export default function MessagesSetup(props) {
           </Grid>
           <Grid item xs={9}>
             {/* {isEditing === true ? <div><Editor/><textarea value={message.message} cols='150' rows='10'></textarea></div> */}
-            {isEditing === true ? <EditorConvertToJSON update={update} key={key}/> 
+            {isEditing === true ? <EditorConvertToJSON update={update} index={index} closeEditor={closeEditor}/> 
                                   // <Editor 
                                   //   wrapperClassName="demo-wrapper"
                                   //   editorClassName="demo-editor"
