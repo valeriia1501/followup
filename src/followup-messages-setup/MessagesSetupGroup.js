@@ -44,19 +44,27 @@ const MessagesSetupGroup = () => {
       )
     };
 
-    const updatedData = (editedText, index) => {
+    const updatedData = (editedText, index, editedFollowupAfter) => {
       const updatedData = [...data];
-      updatedData[index].message = editedText.slice(3, -5);
+      const newEditedText = editedText.slice(3, -5);
+      let newEditedSubstr;
+      if (newEditedText.indexOf("&nbsp;") !== -1) {
+        newEditedSubstr = newEditedText.slice(0, (newEditedText.indexOf("&nbsp;")));
+        updatedData[index].message = newEditedSubstr;
+      } else {
+        updatedData[index].message = newEditedText;
+      }
+      updatedData[index].followupAfter = editedFollowupAfter;
       return updatedData;
     }
 
-    const updateState = (editedText, index) => {
+    const updateState = (editedText, index, editedFollowupAfter) => {
       setData(
-        updatedData(editedText, index)
+        updatedData(editedText, index, editedFollowupAfter)
       )
-      // console.log(JSON.parse(editedText).blocks[0].text)
       console.log(data)
       console.log(index)
+      console.log(editedFollowupAfter);
     };
 
     return (
