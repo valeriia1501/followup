@@ -15,6 +15,11 @@ const useStyles = makeStyles({
     minWidth: 275,
     marginBottom:'10px',
   },
+  card_disabled: {
+    minWidth: 275,
+    marginBottom:'10px',
+    opacity: 0.5
+  },
   title: {
     fontSize: 20,
     fontWeight: 700,
@@ -37,45 +42,69 @@ const useStyles = makeStyles({
 
 export default function MessagesSetup(props) {
   const classes = useStyles();
-  const {message, messageNumber, update, index} = props;
+  const {message, messageNumber, update, index, dataLength, setData, data} = props;
   const [isEditing, setIsEditing] = React.useState(false);
   const [inputState, setInputState] = React.useState(message.followupAfter);
   const [switchState, setSwitchState] = React.useState({
     checked: true,
   });
+  const [activeFollowup, setActiveFollowup] = React.useState(dataLength - 1);
 
   const handleSwitch = name => event => {
     setSwitchState({ ...switchState, [name]: event.target.checked });
+    // setActiveFollowup(activeFollowup - 1);
+    // switchState.checked ? setActiveFollowup(activeFollowup - 1) : setActiveFollowup(activeFollowup);
+    console.log(activeFollowup);
+    console.log(switchState);
+    console.log(index);
   };
 
   const closeEditor = () => {
     setIsEditing(false)
   };
 
+  const newData = () => {
+    data.pop();
+    const newData = [...data];
+    return newData;
+  }
+
+  const deleteElem = () => {
+    setData(
+      newData()
+    )
+    console.log(newData());
+  };
+
   return (
-    <Card className={classes.card} style={{ marginBottom: "50px"}}>
+    <div>
+      <Card className={(switchState.checked) ? classes.card : classes.card_disabled} style={{ marginBottom: "50px"}}>
         <Grid container>
           <Grid container justify="space-between" style={{ backgroundColor: "#00284d", padding: "20px", color: "#ffffff"}}>
             <Grid>
               <Typography className={classes.title}>
-                Bump {messageNumber}
+                Followup {messageNumber}
               </Typography>
             </Grid>
             <Grid>
-                {!isEditing ? <Button onClick={() => setIsEditing(true)} variant="contained" color="primary" style={{ marginRight: "30px"}}>
+                {(!isEditing && switchState.checked) ? <Button onClick={() => setIsEditing(true)} variant="contained" color="primary" style={{ marginRight: "30px"}}>
                                Edit
                              </Button>
                             :''}
 
-                <FormControlLabel
-                  control={
-                    <Switcher
-                      checked={switchState.checked}
-                      onChange={handleSwitch('checked')}
-                      value="checked"
-                    />
-                  }
-                />
+                {index === activeFollowup ? 
+                  <FormControlLabel
+                    control={
+                      <Switcher
+                        checked={switchState.checked}
+                        onChange={handleSwitch('checked')}
+                        value="checked"
+                      />
+                    }
+                  />
+                  : ''} 
+
+                
             </Grid>
           </Grid>
           <Grid item xs={12} style={{ backgroundColor: "#cccccc", padding: "20px"}}>
@@ -114,6 +143,14 @@ export default function MessagesSetup(props) {
             </Typography>
           </Grid>  
         </Grid>
-    </Card>
+      </Card>
+      {index === dataLength - 1 ? 
+        <Button color="primary" 
+                style={{ marginTop: "-70px"}}
+                onClick={deleteElem}>
+                  Delete This Followup
+        </Button> 
+        : ''}  
+    </div>
   );
 }

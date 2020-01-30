@@ -72,6 +72,9 @@ const MessagesSetupGroup = () => {
             {
                 data.map((elem, index) => {
                     return <MessagesSetup
+                        data={data}
+                        setData={setData}
+                        dataLength={data.length}
                         update={updateState}
                         index={index}
                         key={index}
