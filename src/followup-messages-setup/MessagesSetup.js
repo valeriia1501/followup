@@ -37,6 +37,12 @@ const useStyles = makeStyles({
     fontSize: 14,
     paddingLeft: '20px',
     paddingBottom: '20px',
+  },
+  active: {
+    display: 'inline-block',
+  },
+  disabled: {
+    display: 'none',
   }
 });
 
@@ -52,11 +58,7 @@ export default function MessagesSetup(props) {
 
   const handleSwitch = name => event => {
     setSwitchState({ ...switchState, [name]: event.target.checked });
-    // setActiveFollowup(activeFollowup - 1);
-    // switchState.checked ? setActiveFollowup(activeFollowup - 1) : setActiveFollowup(activeFollowup);
-    console.log(activeFollowup);
-    console.log(switchState);
-    console.log(index);
+    setActiveFollowup(activeFollowup - 1);
   };
 
   const closeEditor = () => {
@@ -92,8 +94,8 @@ export default function MessagesSetup(props) {
                              </Button>
                             :''}
 
-                {index === activeFollowup ? 
                   <FormControlLabel
+                    className={(index === activeFollowup) ? classes.active : classes.disabled} 
                     control={
                       <Switcher
                         checked={switchState.checked}
@@ -102,7 +104,6 @@ export default function MessagesSetup(props) {
                       />
                     }
                   />
-                  : ''} 
 
                 
             </Grid>
