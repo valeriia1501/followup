@@ -30,11 +30,11 @@ const useStyles = makeStyles({
 
 export default function FollowupInfo(props) {
   const classes = useStyles();
-  const {followup} = props;
+  const {followup, followupInstr, setFollowupInstr} = props;
   const [isShowing, setIsShowing] = React.useState(true);
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} onClick={() => setFollowupInstr(!followupInstr)}>
       <CardContent>
         <Grid container>
           <Grid item xs={6}>

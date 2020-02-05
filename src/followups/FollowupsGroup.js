@@ -45,15 +45,19 @@ const FollowupsGroup = () => {
         }
     ]
     const [data, setData] = React.useState(dataArr);
+    const [followupInstr, setFollowupInstr] = React.useState(false);
     return (
         <div>
-            {
+            { !followupInstr ? 
                 data.map((elem, index) => {
                     return <FollowupInfo
+                        followupInstr={followupInstr}
+                        setFollowupInstr={setFollowupInstr}
                         key={index}
                         followup={elem} 
                     />
                 })
+                : <div>wdwd</div>
             }   
         </div>
     );
