@@ -16,12 +16,10 @@ const useStyles = makeStyles({
   card: {
     minWidth: 275,
     marginBottom:'10px',
+    cursor: 'pointer'
   },
   title: {
     fontSize: 14,
-  },
-  info: {
-    width: '200px',
   },
   wrap: {
     margin: '20px',
@@ -30,11 +28,22 @@ const useStyles = makeStyles({
 
 export default function FollowupInfo(props) {
   const classes = useStyles();
-  const {followup, followupInstr, setFollowupInstr} = props;
+  const {followup, followupInstr, setFollowupInstr, setCurFollowup} = props;
   const [isShowing, setIsShowing] = React.useState(true);
 
+  const showSingleTable = (event) => {
+    setFollowupInstr(!followupInstr);
+    setCurFollowup(followup);
+    event.stopPropagation()
+  }
+
+  const showTableInCard = (event) => {
+    setIsShowing(!isShowing)
+    event.stopPropagation()
+  }
+
   return (
-    <Card className={classes.card} onClick={() => setFollowupInstr(!followupInstr)}>
+    <Card className={classes.card} onClick={showSingleTable}>
       <CardContent>
         <Grid container>
           <Grid item xs={6}>
@@ -61,7 +70,7 @@ export default function FollowupInfo(props) {
       <CardActions>
         {
         
-          isShowing ? <Button size="small" onClick={() => setIsShowing(!isShowing)}>Show More</Button>
+          isShowing ? <Button size="small" onClick={showTableInCard}>Show More</Button>
             : 
               <Table className={classes.wrap}>
                 <TableHead>

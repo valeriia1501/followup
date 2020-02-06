@@ -1,5 +1,16 @@
 import React from 'react';
 import FollowupInfo from './FollowupInfo.js';
+import FollowupSingleInfo from './FollowupSingleInfo.js';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  card: {
+    opacity: '1',
+  },
+  cardDisabled: {
+    opacity: '0.5',
+  }
+});
 
 const FollowupsGroup = () => {
     const dataArr = [
@@ -46,18 +57,26 @@ const FollowupsGroup = () => {
     ]
     const [data, setData] = React.useState(dataArr);
     const [followupInstr, setFollowupInstr] = React.useState(false);
+    const [curFollowup, setCurFollowup] = React.useState('');
+    const classes = useStyles();
+
     return (
         <div>
             { !followupInstr ? 
                 data.map((elem, index) => {
                     return <FollowupInfo
-                        followupInstr={followupInstr}
+                        setCurFollowup={setCurFollowup}
                         setFollowupInstr={setFollowupInstr}
                         key={index}
                         followup={elem} 
                     />
                 })
-                : <div>wdwd</div>
+                : 
+                  <FollowupSingleInfo 
+                    curFollowup={curFollowup}
+                    setFollowupInstr={setFollowupInstr}
+                    followupInstr={followupInstr}
+                  />
             }   
         </div>
     );
