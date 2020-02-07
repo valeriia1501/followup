@@ -36,6 +36,27 @@ const useStyles = makeStyles({
     buttonInstruction: {
       textTransform: 'none'
     },
+    tableLeft: {
+      width: '50%'
+    },
+    tableMiddle: {
+      width: '25%'
+    },
+    tableRight: {
+      width: '25%'
+    },
+    input: {
+      width: '300px',
+      padding: '10px',
+      marginTop: '10px'
+    },
+    title: {
+      minWidth: '300px'
+    },
+    strings: {
+      padding: '5px',
+      marginTop: '5px'
+    }
 });
 
 const styles = theme => ({
@@ -79,10 +100,65 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 const FollowupSingleInfo = (props) => {
+
+    const instructionsArr = [
+      {
+        "instruction": "+containsDate",
+        "description": "check email if it contains any date, identified by Machine Learning"
+      },
+      {
+        "instruction": "+containsLink",
+        "description": "check if email any link (except email) (may work poorly if email footer contains website link), to filter out links you can use script with same name"
+      },
+      {
+        "instruction": "+notify",
+        "description": "notify if reply received via all available notification channels"
+      },
+      {
+        "instruction": "+workhours",
+        "description": "will enforce email to be followed up only during working hours, so it won't be sent at 1A.M, instead it'll wait for start of working hours(e.g 8A.M, specified in settings)"
+      },
+      {
+        "instruction": "+interval('duration')",
+        "description": "specify the interval with which service will followup email"
+      },
+      {
+        "instruction": "+days([day|..])",
+        "description": "specify by which days email should be followed up"
+      },
+      {
+        "instruction": "+contains(['string'|..])",
+        "description": "check email if it replied message contains specific string. It'll continue following up unless required value found. e.g +contains ('about_trip') will send followup until about_trip string encountered. Dangerous function, better to consider next option"
+      },
+      {
+        "instruction": "+containsAny(['string'|..])",
+        "description": "same as above, but will stop after encountering any of strings"
+      },
+      {
+        "instruction": "+containsLink('string')",
+        "description": "checks if email contains link and string is in this link"
+      },
+      {
+        "instruction": "+notify('channel')",
+        "description": "notify via notification channel, should be set up before using or won't work otherwises"
+      }
+    ]
+
+    const [instructions, setInstructions] = React.useState(instructionsArr);
     const [isActive, setISActive] = React.useState(true);
-    const {curFollowup, setFollowupInstr, followupInstr} = props;
+    const {curFollowup, setCurFollowup, setFollowupInstr, followupInstr} = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [parameters, setParameters] = React.useState(false);
+    const [whichParameters, setWhichParameters] = React.useState(false);
+    const [newStringValue, setNewStringValue] = React.useState('about_trip');
+    const [newStrings, setNewStrings] = React.useState([]);
+
+    const addString = () => {
+      let newStringsArr = [...newStrings, newStringValue];
+      setNewStrings(newStringsArr);
+      console.log(newStrings)
+    }
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -91,6 +167,43 @@ const FollowupSingleInfo = (props) => {
       setOpen(false);
     };
     
+    const parametersArr = [`duration`, `[day|..]`, `string`, `['string'|..]`, `channel`]
+    const checkParameters = (e) => {
+      if (e.target.innerText.includes('(')) {
+        setParameters(!parameters);
+        for (let elem of parametersArr) {
+          if(e.target.innerText.includes(elem)) {
+            console.log(elem);
+            setWhichParameters(elem);
+          }
+        }
+        console.log(whichParameters);
+      } else {
+        console.log(e.target.innerText);
+        let instrDescription;
+        for (let item of instructions) {
+          if (item.instruction == e.target.innerText) {
+            instrDescription = item.description;
+          }
+        }
+        let newCurFollowup = Object.assign({}, curFollowup);
+        newCurFollowup.instructions.push({
+          "instruction": `${e.target.innerText} - ${instrDescription}`,
+          "parameters": '',
+          "state": "passes"
+        })
+
+        console.log(newCurFollowup);
+        // newCurFollowup.instruction = `${e.target.innerText} - ${instrDescription}`;
+        // newCurFollowup.parameters = '';
+        // console.log (newCurFollowup);
+        // console.log(setCurFollowup);
+        // setCurFollowup(newCurFollowup);
+
+        handleClose();
+      }
+    }
+
     return (
         <div className={!isActive ? classes.cardDisabled : classes.card}>
             <CardContent>
@@ -146,17 +259,21 @@ const FollowupSingleInfo = (props) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Instruction</TableCell>
-                  <TableCell>Parameters</TableCell>
-                  <TableCell>State</TableCell>
+                  <TableCell className={classes.tableLeft}>Instruction</TableCell>
+                  <TableCell className={classes.tableMiddle}>Parameters</TableCell>
+                  <TableCell className={classes.tableRight}>State</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>{curFollowup.instruction}</TableCell>
-                  <TableCell>{curFollowup.parameters}</TableCell>
-                  <TableCell>{curFollowup.state}</TableCell>
-                </TableRow>
+                {
+                  curFollowup.instructions.map((elem, index) => {
+                    return <TableRow key={index}>
+                            <TableCell className={classes.tableLeft}>{elem.instruction}</TableCell>
+                            <TableCell className={classes.tableMiddle}>{elem.parameters}</TableCell>
+                            <TableCell className={classes.tableRight}>{elem.state}</TableCell>
+                          </TableRow>
+                  })
+                }
               </TableBody>
             </Table>
 
@@ -179,99 +296,103 @@ const FollowupSingleInfo = (props) => {
             </Button> 
             
             <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-                <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-                  Choose instruction
+                <DialogTitle id="customized-dialog-title" onClose={handleClose} className={classes.title}>
+                  {!parameters ? 'Choose instruction' : 'Choose parameters'} 
                 </DialogTitle>
-                <DialogContent dividers>
-                  
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+containsDate</Button></Grid>
-                      <Grid item xs={7}>
-                        check email if it contains any date, identified by Machine Learning
-                      </Grid>
-                    </Grid>
+                    {!parameters ? <div>
+                                      <DialogContent dividers>
+                                        {
+                                          instructions.map((elem, index) => {
+                                            return <Grid container spacing={4} alignItems="center" key={index}>
+                                                      <Grid item xs={5}><Button onClick={checkParameters} className={classes.buttonInstruction} variant="outlined">{elem.instruction}</Button></Grid>
+                                                      <Grid item xs={7}>
+                                                        {elem.description}
+                                                      </Grid>
+                                                    </Grid>
+                                            })
+                                        }
+
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button autoFocus onClick={handleClose} color="primary">
+                                          Cancel
+                                        </Button>
+                                      </DialogActions>
+                                    </div>
+                                : 
+                                    <div>
+                                      <DialogContent dividers>
+                                        
+                                        {
+                                          whichParameters == `duration` ? 
+                                            <div>
+                                              <label>
+                                                Enter duration below <br/>
+                                                <input className={classes.input} type="text" defaultValue="20h"/> 
+                                              </label>
+                                            </div>
+                                          :
+                                          whichParameters == `[day|..]` ? 
+                                          <div>
+                                            Choose days <br/><br/>
+                                            <label><input type="checkbox"/>Sunday<br/></label>
+                                            <label><input type="checkbox"/>Monday<br/></label>
+                                            <label><input type="checkbox"/>Tuesday<br/></label>
+                                            <label><input type="checkbox"/>Wednesday<br/></label>
+                                            <label><input type="checkbox"/>Thursday<br/></label>
+                                            <label><input type="checkbox"/>Friday<br/></label>
+                                            <label><input type="checkbox"/>Saturday</label>
+                                          </div>
+                                          :
+                                          whichParameters == `string` ? 
+                                          <div>
+                                            <label>
+                                              Enter string below <br/>
+                                              <input className={classes.input} type="text" defaultValue="about_trip"/> 
+                                            </label>
+                                          </div>
+                                          :
+                                          whichParameters == `channel` ? 
+                                          <div>
+                                            <label>
+                                              Enter channel below <br/>
+                                              <input className={classes.input} type="text" defaultValue="about_trip_channel"/> 
+                                            </label>
+                                          </div>
+                                          :
+                                          whichParameters == `['string'|..]` ? 
+                                          <div>
+                                            <label>
+                                              Enter string below <br/>
+                                              {
+                                                newStrings.map((elem, index) => {
+                                                  return <div key={index}>{elem}</div>
+                                                })
+                                              }
+                                              <input 
+                                                onChange={(e) => setNewStringValue(e.target.value)}
+                                                className={classes.strings} 
+                                                type="text" 
+                                                defaultValue="about_trip"/><br/>
+                                              <Button
+                                                onClick={addString} 
+                                                size="small" 
+                                                color="primary" 
+                                                className={classes.strings}>+</Button> 
+                                            </label>
+                                          </div>
+                                          : ''
+                                        }
+                                    
+
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button autoFocus onClick={handleClose} color="primary">
+                                          Save
+                                        </Button>
+                                      </DialogActions>
+                                    </div> }
                 
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+containsLink</Button></Grid>
-                      <Grid item xs={7}>
-                        check if email any link (except email) (may work poorly if email footer contains 
-                        website link), to filter out links you can use script with same name
-                      </Grid>
-                    </Grid>
-                
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+notify</Button></Grid>
-                      <Grid item xs={7}>
-                        notify if reply received via all available notification channels
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+workhours</Button></Grid>
-                      <Grid item xs={7}>
-                        will enforce email to be followed up only during working hours, so it won't be sent at 1A.M, 
-                        instead it'll wait for start of working hours(e.g 8A.M, specified in settings)
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+interval('duration')</Button></Grid>
-                      <Grid item xs={7}>
-                        specify the interval with which service will followup email
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+days([day|..])</Button></Grid>
-                      <Grid item xs={7}>
-                        specify by which days email should be followed up
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+!days([day|..])</Button></Grid>
-                      <Grid item xs={7}>
-                        specify by which days email should not be sent, send it in all the other days
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+contains(['string'|..])</Button></Grid>
-                      <Grid item xs={7}>
-                        check email if it replied message contains specific string. It'll continue following 
-                        up unless required value found. e.g +contains ('about_trip') 
-                        will send followup until about_trip string encountered. Dangerous function, 
-                        better to consider next option
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+containsAny(['string'|..])</Button></Grid>
-                      <Grid item xs={7}>
-                        same as above, but will stop after encountering any of strings
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+containsLink('string')</Button></Grid>
-                      <Grid item xs={7}>
-                        checks if email contains link and string is in this link
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={7} alignItems="center">
-                      <Grid item xs={5}><Button className={classes.buttonInstruction} variant="outlined">+notify('channel')</Button></Grid>
-                      <Grid item xs={7}>
-                        notify via notification channel, should be set up before using or won't work otherwise
-                      </Grid>
-                    </Grid>
-                
-                </DialogContent>
-                <DialogActions>
-                  <Button autoFocus onClick={handleClose} color="primary">
-                    Cancel
-                  </Button>
-                </DialogActions>
             </Dialog>
         </div>
     );

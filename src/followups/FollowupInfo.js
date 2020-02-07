@@ -23,7 +23,16 @@ const useStyles = makeStyles({
   },
   wrap: {
     margin: '20px',
-  }
+  },
+  tableLeft: {
+    width: '50%'
+  },
+  tableMiddle: {
+    width: '25%'
+  },
+  tableRight: {
+    width: '25%'
+  },
 });
 
 export default function FollowupInfo(props) {
@@ -75,17 +84,21 @@ export default function FollowupInfo(props) {
               <Table className={classes.wrap}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Instruction</TableCell>
-                    <TableCell>Parameters</TableCell>
-                    <TableCell>State</TableCell>
+                    <TableCell className={classes.tableLeft}>Instruction</TableCell>
+                    <TableCell className={classes.tableMiddle}>Parameters</TableCell>
+                    <TableCell className={classes.tableRight}>State</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>{followup.instruction}</TableCell>
-                    <TableCell>{followup.parameters}</TableCell>
-                    <TableCell>{followup.state}</TableCell>
-                  </TableRow>
+                  {
+                    followup.instructions.map((elem, index) => {
+                      return <TableRow key={index}>
+                              <TableCell className={classes.tableLeft}>{elem.instruction}</TableCell>
+                              <TableCell className={classes.tableMiddle}>{elem.parameters}</TableCell>
+                              <TableCell className={classes.tableRight}>{elem.state}</TableCell>
+                            </TableRow>
+                    })
+                  }
                 </TableBody>
               </Table> 
         }

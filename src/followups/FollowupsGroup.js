@@ -20,9 +20,13 @@ const FollowupsGroup = () => {
           "target" : "Nick Bolton",
           "type": "cc",
           "date": "24/01/2020 00:00",
-          "instruction": "info about type 'cc'",
-          "parameters": "parameters for details form",
-          "state": "passes"
+          "instructions": [
+            {
+              "instruction": "info about type 'cc'",
+              "parameters": "parameters for details form",
+              "state": "passes"
+            }
+          ]
         },
         {
           "from": "Bob Johnson",
@@ -30,9 +34,13 @@ const FollowupsGroup = () => {
           "target" : "Nick",
           "type": "to",
           "date": "25/01/2020 00:00",
-          "instruction": "info about type 'to'",
-          "parameters": "parameters for form",
-          "state": "failed"
+          "instructions": [
+            {
+              "instruction": "info about type 'to'",
+              "parameters": "parameters for form",
+              "state": "failed"
+            }
+          ]
         },
         {
           "from": "Helen",
@@ -40,9 +48,13 @@ const FollowupsGroup = () => {
           "target" : "Ken",
           "type": "bcc",
           "date": "26/01/2020 00:00",
-          "instruction": "info about type 'bcc'",
-          "parameters": "parameters for form",
-          "state": "passes"
+          "instructions": [
+            {
+              "instruction": "info about type 'bcc'",
+              "parameters": "parameters for form",
+              "state": "passes"
+            }
+          ]
         },
         {
           "from": "Emilia",
@@ -50,9 +62,13 @@ const FollowupsGroup = () => {
           "target" : "Nick Bolton",
           "type": "replyto",
           "date": "27/01/2020 00:00",
-          "instruction": "info about type 'replyto'",
-          "parameters": "parameters for details form",
-          "state": "failed"
+          "instructions": [
+            {
+              "instruction": "info about type 'replyto'",
+              "parameters": "parameters for details form",
+              "state": "failed"
+            }
+          ]
         }
     ]
     const [data, setData] = React.useState(dataArr);
@@ -74,6 +90,7 @@ const FollowupsGroup = () => {
                 : 
                   <FollowupSingleInfo 
                     curFollowup={curFollowup}
+                    setCurFollowup={setCurFollowup}
                     setFollowupInstr={setFollowupInstr}
                     followupInstr={followupInstr}
                   />
