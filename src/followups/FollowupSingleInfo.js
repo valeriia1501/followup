@@ -56,7 +56,11 @@ const useStyles = makeStyles({
     strings: {
       padding: '5px',
       marginTop: '5px'
-    }
+    },
+    buttonInStrings: {
+      padding: '5px',
+      margin: '4px 6px'
+    },
 });
 
 const styles = theme => ({
@@ -151,13 +155,93 @@ const FollowupSingleInfo = (props) => {
     const [open, setOpen] = React.useState(false);
     const [parameters, setParameters] = React.useState(false);
     const [whichParameters, setWhichParameters] = React.useState(false);
-    const [newStringValue, setNewStringValue] = React.useState('about_trip');
-    const [newStrings, setNewStrings] = React.useState([]);
+    const [newStrings, setNewStrings] = React.useState(['about_trip']);
+    const [instrWithParams, setInstrWithParams] = React.useState('');
+    const [descrWithParams, setDescrWithParams] = React.useState('');
 
-    const addString = () => {
-      let newStringsArr = [...newStrings, newStringValue];
+
+    const [paramsDuration, setParamsDuration] = React.useState('20h');
+    const [paramsDay, setParamsDay] = React.useState([]);
+    const [paramsString, setParamsString] = React.useState('about_trip');
+    const [paramsChannel, setParamsChannel] = React.useState('about_trip_channel');
+  
+    const writeDayParams = (e) => {
+      if (e.target.checked) {
+        let daysArr = [...paramsDay];
+        daysArr.push(e.target.parentNode.innerText);
+        setParamsDay(daysArr);
+      }
+    }
+
+    const addString = (e) => {
+      let newStringsArr = [];
+      for (let item of e.target.parentNode.parentNode.children) {
+        if (item.className === 'singleString') {
+          for (let subItem of item.children) {
+            if (subItem.type == 'text') {
+              newStringsArr.push(subItem.value);
+            }
+          }
+        }
+      }
+      newStringsArr.push('');
       setNewStrings(newStringsArr);
-      console.log(newStrings)
+    }
+
+    const saveString = (e) => {
+      let newStringsArr = [];
+      for (let item of e.target.parentNode.parentNode.children) {
+        if (item.className === 'singleString') {
+          for (let subItem of item.children) {
+            if (subItem.type == 'text') {
+              newStringsArr.push(subItem.value);
+            }
+          }
+        }
+      }
+      setNewStrings(newStringsArr);
+    }
+
+    const removeString = (e) => {
+      let newArr = [];
+      for (let item of e.target.parentNode.parentNode.parentNode.children) {
+        if (item.className === 'singleString') {
+          for (let subItem of item.children) {
+            if (subItem.type == 'button') {
+              newArr.push(subItem);
+            }
+          }
+        }
+      }
+
+      let i = newArr.indexOf(e.target.parentNode);
+      let newStringsArr = [];
+      newStrings.splice(i, 1);
+      newStringsArr = [...newStrings];
+      setNewStrings(newStringsArr);
+    }
+
+    const saveAll = () => {
+
+      let params;
+      if (whichParameters == `duration`) {
+        params = paramsDuration;
+      } else if (whichParameters == `[day|..]`) {
+        params = paramsDay;
+      } else if (whichParameters == `string`) {
+        params = paramsString;
+      } else if (whichParameters == `channel`) {
+        params = paramsChannel;
+      } 
+
+      let newCurFollowup = Object.assign({}, curFollowup);
+
+      newCurFollowup.instructions.push({
+        "instruction": `${instrWithParams} - ${descrWithParams}`,
+        "parameters": params,
+        "state": "passes"
+      });
+      handleClose();
     }
 
     const handleClickOpen = () => {
@@ -167,19 +251,27 @@ const FollowupSingleInfo = (props) => {
       setOpen(false);
     };
     
-    const parametersArr = [`duration`, `[day|..]`, `string`, `['string'|..]`, `channel`]
+    const parametersArr = [`duration`, `[day|..]`, `string`, `['string'|..]`, `channel`];
+
     const checkParameters = (e) => {
       if (e.target.innerText.includes('(')) {
         setParameters(!parameters);
         for (let elem of parametersArr) {
           if(e.target.innerText.includes(elem)) {
-            console.log(elem);
             setWhichParameters(elem);
           }
         }
-        console.log(whichParameters);
+        let instrDescriptionParams;
+        for (let item of instructions) {
+          if (item.instruction == e.target.innerText) {
+            instrDescriptionParams = item.description;
+          }
+        }
+
+        setInstrWithParams(e.target.innerText);
+        setDescrWithParams(instrDescriptionParams);
+
       } else {
-        console.log(e.target.innerText);
         let instrDescription;
         for (let item of instructions) {
           if (item.instruction == e.target.innerText) {
@@ -192,13 +284,6 @@ const FollowupSingleInfo = (props) => {
           "parameters": '',
           "state": "passes"
         })
-
-        console.log(newCurFollowup);
-        // newCurFollowup.instruction = `${e.target.innerText} - ${instrDescription}`;
-        // newCurFollowup.parameters = '';
-        // console.log (newCurFollowup);
-        // console.log(setCurFollowup);
-        // setCurFollowup(newCurFollowup);
 
         handleClose();
       }
@@ -328,27 +413,35 @@ const FollowupSingleInfo = (props) => {
                                             <div>
                                               <label>
                                                 Enter duration below <br/>
-                                                <input className={classes.input} type="text" defaultValue="20h"/> 
+                                                <input 
+                                                  onChange={(e) => setParamsDuration(e.target.value)}
+                                                  className={classes.input} 
+                                                  type="text" 
+                                                  defaultValue={paramsDuration}/> 
                                               </label>
                                             </div>
                                           :
                                           whichParameters == `[day|..]` ? 
                                           <div>
                                             Choose days <br/><br/>
-                                            <label><input type="checkbox"/>Sunday<br/></label>
-                                            <label><input type="checkbox"/>Monday<br/></label>
-                                            <label><input type="checkbox"/>Tuesday<br/></label>
-                                            <label><input type="checkbox"/>Wednesday<br/></label>
-                                            <label><input type="checkbox"/>Thursday<br/></label>
-                                            <label><input type="checkbox"/>Friday<br/></label>
-                                            <label><input type="checkbox"/>Saturday</label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Sunday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Monday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Tuesday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Wednesday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Thursday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Friday<br/></label>
+                                            <label><input onChange={writeDayParams} type="checkbox"/>Saturday</label>
                                           </div>
                                           :
                                           whichParameters == `string` ? 
                                           <div>
                                             <label>
                                               Enter string below <br/>
-                                              <input className={classes.input} type="text" defaultValue="about_trip"/> 
+                                              <input
+                                                onChange={(e) => setParamsString(e.target.value)}
+                                                className={classes.input} 
+                                                type="text" 
+                                                defaultValue={paramsString}/> 
                                             </label>
                                           </div>
                                           :
@@ -356,24 +449,35 @@ const FollowupSingleInfo = (props) => {
                                           <div>
                                             <label>
                                               Enter channel below <br/>
-                                              <input className={classes.input} type="text" defaultValue="about_trip_channel"/> 
+                                              <input
+                                                onChange={(e) => setParamsChannel(e.target.value)} 
+                                                className={classes.input} 
+                                                type="text" 
+                                                defaultValue={paramsChannel}/> 
                                             </label>
                                           </div>
                                           :
                                           whichParameters == `['string'|..]` ? 
                                           <div>
                                             <label>
-                                              Enter string below <br/>
+                                              Enter string below <br/><br/> 
                                               {
                                                 newStrings.map((elem, index) => {
-                                                  return <div key={index}>{elem}</div>
+                                                  return <div key={index} className="singleString">
+                                                          <input 
+                                                            onChange={saveString}
+                                                            className={classes.strings} 
+                                                            type="text" 
+                                                            defaultValue={elem}/>
+                                                          <Button
+                                                            id={index}
+                                                            onClick={removeString}
+                                                            size="small" 
+                                                            color="primary" 
+                                                            className={classes.buttonInStrings}>Remove</Button> 
+                                                        </div>
                                                 })
                                               }
-                                              <input 
-                                                onChange={(e) => setNewStringValue(e.target.value)}
-                                                className={classes.strings} 
-                                                type="text" 
-                                                defaultValue="about_trip"/><br/>
                                               <Button
                                                 onClick={addString} 
                                                 size="small" 
@@ -387,7 +491,7 @@ const FollowupSingleInfo = (props) => {
 
                                       </DialogContent>
                                       <DialogActions>
-                                        <Button autoFocus onClick={handleClose} color="primary">
+                                        <Button autoFocus onClick={saveAll} color="primary">
                                           Save
                                         </Button>
                                       </DialogActions>
