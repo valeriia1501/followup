@@ -61,6 +61,9 @@ const useStyles = makeStyles({
       padding: '5px',
       margin: '4px 6px'
     },
+    deleted: {
+      display: 'none',
+    }
 });
 
 const styles = theme => ({
@@ -164,18 +167,20 @@ const FollowupSingleInfo = (props) => {
     const [paramsDay, setParamsDay] = React.useState([]);
     const [paramsString, setParamsString] = React.useState('about_trip');
     const [paramsChannel, setParamsChannel] = React.useState('about_trip_channel');
+
+    const [paramsDayDom, setParamsDayDom] = React.useState([]);
+    const [paramsStringDom, setParamsStringDom] = React.useState([]);
+    const [isRemoving, setIsRemoving] = React.useState(false);
   
     const writeDayParams = (e) => {
-      if (e.target.checked) {
-        let daysArr = [...paramsDay];
-        daysArr.push(e.target.parentNode.innerText);
-        setParamsDay(daysArr);
-      }
+      setParamsDayDom(e.target.parentNode.parentNode.children);
     }
 
+    
     const addString = (e) => {
       let newStringsArr = [];
       for (let item of e.target.parentNode.parentNode.children) {
+        // item.classList.remove(classes.deleted);
         if (item.className === 'singleString') {
           for (let subItem of item.children) {
             if (subItem.type == 'text') {
@@ -191,6 +196,7 @@ const FollowupSingleInfo = (props) => {
     const saveString = (e) => {
       let newStringsArr = [];
       for (let item of e.target.parentNode.parentNode.children) {
+        // item.classList.remove(classes.deleted);
         if (item.className === 'singleString') {
           for (let subItem of item.children) {
             if (subItem.type == 'text') {
@@ -203,35 +209,90 @@ const FollowupSingleInfo = (props) => {
     }
 
     const removeString = (e) => {
-      let newArr = [];
-      for (let item of e.target.parentNode.parentNode.parentNode.children) {
-        if (item.className === 'singleString') {
-          for (let subItem of item.children) {
-            if (subItem.type == 'button') {
-              newArr.push(subItem);
-            }
-          }
-        }
-      }
+      setIsRemoving(true);
+      console.log(e.target.parentNode.parentNode.parentNode.children);
+      // e.target.parentNode.parentNode.remove(); 
+      e.target.parentNode.parentNode.style.display = 'none';
+      console.log(e.target.parentNode.parentNode);
+      setParamsStringDom(e.target.parentNode.parentNode.parentNode.children);
 
-      let i = newArr.indexOf(e.target.parentNode);
-      let newStringsArr = [];
-      newStrings.splice(i, 1);
-      newStringsArr = [...newStrings];
-      setNewStrings(newStringsArr);
+      // let newStringsArr = [];
+      // for (let item of e.target.parentNode.parentNode.parentNode.children) {
+      //   console.log(item.style.display);
+      //   if (item.style.display !== 'none') {
+      //     console.log(item);
+      //     for (let subItem of item.children) {
+      //       if (subItem.type == 'text') {
+      //         newStringsArr.push(subItem.value);
+      //       }
+      //     }
+      //   }
+      // }
+
+      // setNewStrings(newStringsArr);
+      // setMediumStringsState(newStringsArr);
+      // setNewStrings(newStringsArr);
+
+
+      // let newArr = [];
+      // for (let item of e.target.parentNode.parentNode.parentNode.children) {
+      //   if (item.className === 'singleString') {
+      //     for (let subItem of item.children) {
+      //       if (subItem.type == 'button') {
+      //         newArr.push(subItem);
+      //       }
+      //     }
+      //   }
+      // }
+
+      // let i = newArr.indexOf(e.target.parentNode);
+      // let newStringsArr = [];
+      // newStrings.splice(i, 1);
+      // newStringsArr = [...newStrings];
     }
 
     const saveAll = () => {
+
+      console.log(newStrings);
 
       let params;
       if (whichParameters == `duration`) {
         params = paramsDuration;
       } else if (whichParameters == `[day|..]`) {
-        params = paramsDay;
+        let newDaysArr = [];
+        for (let item of paramsDayDom) {
+          if (item.className === 'singleDay' && item.children[0].checked) {
+            newDaysArr.push(item.innerText);
+          }
+        }
+        let strOfDays = newDaysArr.join(', ');
+        params = strOfDays;
       } else if (whichParameters == `string`) {
         params = paramsString;
+        setParamsString('about_trip');
       } else if (whichParameters == `channel`) {
         params = paramsChannel;
+        setParamsChannel('about_trip_channel');
+      } else if (whichParameters == `['string'|..]`) {
+        let strOfStrings;
+        if (isRemoving) {
+          let newStringsArr = [];
+          for (let item of paramsStringDom) {
+            console.log(item)
+            if ((!item.style.display && item.className === 'singleString')) {
+              console.log(item.children[0].value);
+              newStringsArr.push(item.children[0].value);
+              strOfStrings = newStringsArr.join(', ');
+              setIsRemoving(false)
+            }
+          }
+        } else {
+          strOfStrings = newStrings.join(', ')
+        }
+        
+        // strOfStrings = newStringsArr.join(', ') || newStrings.join(', ');
+        params = strOfStrings;
+        setNewStrings(['about_trip']);
       } 
 
       let newCurFollowup = Object.assign({}, curFollowup);
@@ -242,6 +303,7 @@ const FollowupSingleInfo = (props) => {
         "state": "passes"
       });
       handleClose();
+      setParameters(false);
     }
 
     const handleClickOpen = () => {
@@ -250,6 +312,10 @@ const FollowupSingleInfo = (props) => {
     const handleClose = () => {
       setOpen(false);
     };
+    const handleCloseAndSet = () => {
+      setParameters(false)
+      handleClose();
+    }
     
     const parametersArr = [`duration`, `[day|..]`, `string`, `['string'|..]`, `channel`];
 
@@ -381,8 +447,11 @@ const FollowupSingleInfo = (props) => {
             </Button> 
             
             <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-                <DialogTitle id="customized-dialog-title" onClose={handleClose} className={classes.title}>
-                  {!parameters ? 'Choose instruction' : 'Choose parameters'} 
+                <DialogTitle 
+                  id="customized-dialog-title" 
+                  onClose={!parameters ? handleClose : handleCloseAndSet} 
+                  className={classes.title}>
+                    {!parameters ? 'Choose instruction' : 'Choose parameters'} 
                 </DialogTitle>
                     {!parameters ? <div>
                                       <DialogContent dividers>
@@ -424,13 +493,13 @@ const FollowupSingleInfo = (props) => {
                                           whichParameters == `[day|..]` ? 
                                           <div>
                                             Choose days <br/><br/>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Sunday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Monday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Tuesday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Wednesday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Thursday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Friday<br/></label>
-                                            <label><input onChange={writeDayParams} type="checkbox"/>Saturday</label>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Sunday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Monday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Tuesday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Wednesday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Thursday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Friday</label><br/>
+                                            <label className="singleDay"><input onChange={writeDayParams} type="checkbox"/>Saturday</label>
                                           </div>
                                           :
                                           whichParameters == `string` ? 
