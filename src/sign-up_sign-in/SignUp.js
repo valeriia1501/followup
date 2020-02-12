@@ -127,7 +127,7 @@ export default function SignUp() {
             color="primary"
             className={classes.submit}
           >
-            <Link className={classes.linkButton} href="/dashboard" variant="body2">
+            <Link className={classes.linkButton} href="/profile/sign-up/subscriptions" variant="body2">
               Sign up
             </Link>
           </Button>

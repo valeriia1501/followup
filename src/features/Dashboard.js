@@ -19,6 +19,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import FollowupsGroup from './followups/FollowupsGroup.js';
 import MessagesSetupGroup from './followup-messages-setup/MessagesSetupGroup.js';
 import AddressesGroup from './list-of-addresses/AddressesGroup.js';
+import Charts from './charts/Charts.js';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
 const drawerWidth = 240;
@@ -162,6 +163,12 @@ export default function Dashboard() {
                 <ListItemText primary='List Of Addresses' />
               </ListItem>
             </Link>
+            <Link to='/dashboard/charts'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='Charts' />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
         <main className={classes.content}>
@@ -175,6 +182,9 @@ export default function Dashboard() {
               </Route>
               <Route path="/dashboard/list-of-addresses">     
                 <AddressesGroup/>
+              </Route>
+              <Route path="/dashboard/charts">     
+                <Charts/>
               </Route>
           </Switch>    
         </main>
