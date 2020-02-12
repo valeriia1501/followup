@@ -61,9 +61,6 @@ const useStyles = makeStyles({
       padding: '5px',
       margin: '4px 6px'
     },
-    deleted: {
-      display: 'none',
-    }
 });
 
 const styles = theme => ({
@@ -164,13 +161,13 @@ const FollowupSingleInfo = (props) => {
 
 
     const [paramsDuration, setParamsDuration] = React.useState('20h');
-    const [paramsDay, setParamsDay] = React.useState([]);
     const [paramsString, setParamsString] = React.useState('about_trip');
     const [paramsChannel, setParamsChannel] = React.useState('about_trip_channel');
 
     const [paramsDayDom, setParamsDayDom] = React.useState([]);
     const [paramsStringDom, setParamsStringDom] = React.useState([]);
     const [isRemoving, setIsRemoving] = React.useState(false);
+    const [curRemove, setCurRemove] = React.useState(true);
   
     const writeDayParams = (e) => {
       setParamsDayDom(e.target.parentNode.parentNode.children);
@@ -180,7 +177,6 @@ const FollowupSingleInfo = (props) => {
     const addString = (e) => {
       let newStringsArr = [];
       for (let item of e.target.parentNode.parentNode.children) {
-        // item.classList.remove(classes.deleted);
         if (item.className === 'singleString') {
           for (let subItem of item.children) {
             if (subItem.type == 'text') {
@@ -191,12 +187,12 @@ const FollowupSingleInfo = (props) => {
       }
       newStringsArr.push('');
       setNewStrings(newStringsArr);
+      setCurRemove(true)
     }
 
     const saveString = (e) => {
       let newStringsArr = [];
       for (let item of e.target.parentNode.parentNode.children) {
-        // item.classList.remove(classes.deleted);
         if (item.className === 'singleString') {
           for (let subItem of item.children) {
             if (subItem.type == 'text') {
@@ -210,54 +206,27 @@ const FollowupSingleInfo = (props) => {
 
     const removeString = (e) => {
       setIsRemoving(true);
-      console.log(e.target.parentNode.parentNode.parentNode.children);
-      // e.target.parentNode.parentNode.remove(); 
       e.target.parentNode.parentNode.style.display = 'none';
-      console.log(e.target.parentNode.parentNode);
       setParamsStringDom(e.target.parentNode.parentNode.parentNode.children);
 
-      // let newStringsArr = [];
-      // for (let item of e.target.parentNode.parentNode.parentNode.children) {
-      //   console.log(item.style.display);
-      //   if (item.style.display !== 'none') {
-      //     console.log(item);
-      //     for (let subItem of item.children) {
-      //       if (subItem.type == 'text') {
-      //         newStringsArr.push(subItem.value);
-      //       }
-      //     }
-      //   }
-      // }
-
-      // setNewStrings(newStringsArr);
-      // setMediumStringsState(newStringsArr);
-      // setNewStrings(newStringsArr);
-
-
-      // let newArr = [];
-      // for (let item of e.target.parentNode.parentNode.parentNode.children) {
-      //   if (item.className === 'singleString') {
-      //     for (let subItem of item.children) {
-      //       if (subItem.type == 'button') {
-      //         newArr.push(subItem);
-      //       }
-      //     }
-      //   }
-      // }
-
-      // let i = newArr.indexOf(e.target.parentNode);
-      // let newStringsArr = [];
-      // newStrings.splice(i, 1);
-      // newStringsArr = [...newStrings];
+      let newStringsArr = [];
+          for (let item of e.target.parentNode.parentNode.parentNode.children) {
+            if ((!item.style.display && item.className === 'singleString')) {
+              newStringsArr.push(item.children[0].value);
+            }
+          }
+          if (newStringsArr.length === 1) {
+            setCurRemove(false)
+          }
     }
 
     const saveAll = () => {
 
-      console.log(newStrings);
-
       let params;
+
       if (whichParameters == `duration`) {
         params = paramsDuration;
+        setParamsDuration('20h');
       } else if (whichParameters == `[day|..]`) {
         let newDaysArr = [];
         for (let item of paramsDayDom) {
@@ -278,9 +247,7 @@ const FollowupSingleInfo = (props) => {
         if (isRemoving) {
           let newStringsArr = [];
           for (let item of paramsStringDom) {
-            console.log(item)
             if ((!item.style.display && item.className === 'singleString')) {
-              console.log(item.children[0].value);
               newStringsArr.push(item.children[0].value);
               strOfStrings = newStringsArr.join(', ');
               setIsRemoving(false)
@@ -289,8 +256,6 @@ const FollowupSingleInfo = (props) => {
         } else {
           strOfStrings = newStrings.join(', ')
         }
-        
-        // strOfStrings = newStringsArr.join(', ') || newStrings.join(', ');
         params = strOfStrings;
         setNewStrings(['about_trip']);
       } 
@@ -306,6 +271,7 @@ const FollowupSingleInfo = (props) => {
       setParameters(false);
     }
 
+
     const handleClickOpen = () => {
       setOpen(true);
     };
@@ -313,7 +279,13 @@ const FollowupSingleInfo = (props) => {
       setOpen(false);
     };
     const handleCloseAndSet = () => {
-      setParameters(false)
+      setParameters(false);
+      setParamsDuration('20h');
+      setParamsString('about_trip');
+      setParamsChannel('about_trip_channel');
+      setNewStrings(['about_trip']);
+
+
       handleClose();
     }
     
@@ -388,7 +360,6 @@ const FollowupSingleInfo = (props) => {
                       {isActive ? 'Disable' : 'Enable'}
                   </Button>
                   <Button
-                    // onClick={() => setFollowupInstr(!followupInstr)}
                     className={classes.buttonEdit} 
                     variant="contained" 
                     color="primary" 
@@ -396,7 +367,6 @@ const FollowupSingleInfo = (props) => {
                       Remove
                   </Button>
                   <Button
-                    // onClick={() => setFollowupInstr(!followupInstr)}
                     className={classes.buttonEdit} 
                     variant="contained" 
                     color="primary" 
@@ -446,7 +416,7 @@ const FollowupSingleInfo = (props) => {
                 +
             </Button> 
             
-            <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+            <Dialog onClose={!parameters ? handleClose : handleCloseAndSet} aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle 
                   id="customized-dialog-title" 
                   onClose={!parameters ? handleClose : handleCloseAndSet} 
@@ -538,12 +508,23 @@ const FollowupSingleInfo = (props) => {
                                                             className={classes.strings} 
                                                             type="text" 
                                                             defaultValue={elem}/>
-                                                          <Button
-                                                            id={index}
-                                                            onClick={removeString}
-                                                            size="small" 
-                                                            color="primary" 
-                                                            className={classes.buttonInStrings}>Remove</Button> 
+                                                          {
+                                                            newStrings.length == 1 || !curRemove ? 
+                                                              <Button
+                                                                style={{display: 'none'}}
+                                                                id={index}
+                                                                onClick={removeString}
+                                                                size="small" 
+                                                                color="primary" 
+                                                                className={classes.buttonInStrings}>Remove</Button>
+                                                              :
+                                                              <Button
+                                                                id={index}
+                                                                onClick={removeString}
+                                                                size="small" 
+                                                                color="primary" 
+                                                                className={classes.buttonInStrings}>Remove</Button>
+                                                          }
                                                         </div>
                                                 })
                                               }
