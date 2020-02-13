@@ -52,57 +52,59 @@ export default function FollowupInfo(props) {
   }
 
   return (
-    <Card className={classes.card} onClick={showSingleTable}>
-      <CardContent>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography className={classes.title} gutterBottom>
-              From: {followup.from}
-            </Typography>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Subject: {followup.subject}
-            </Typography>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Next followup on {followup.date}
-            </Typography>
+    <div>
+      <Card className={classes.card} onClick={showSingleTable}>
+        <CardContent>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography className={classes.title} gutterBottom>
+                From: {followup.from}
+              </Typography>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                Subject: {followup.subject}
+              </Typography>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                Next followup on {followup.date}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography className={classes.title} gutterBottom>
+                Target: {followup.target}
+              </Typography>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                Type: {followup.type}
+              </Typography>
+            </Grid>    
           </Grid>
-          <Grid item xs={6}>
-            <Typography className={classes.title} gutterBottom>
-              Target: {followup.target}
-            </Typography>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Type: {followup.type}
-            </Typography>
-          </Grid>    
-        </Grid>
-      </CardContent>
-      <CardActions>
-        {
-        
-          isShowing ? <Button size="small" onClick={showTableInCard}>Show More</Button>
-            : 
-              <Table className={classes.wrap}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={classes.tableLeft}>Instruction</TableCell>
-                    <TableCell className={classes.tableMiddle}>Parameters</TableCell>
-                    <TableCell className={classes.tableRight}>State</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    followup.instructions.map((elem, index) => {
-                      return <TableRow key={index}>
-                              <TableCell className={classes.tableLeft}>{elem.instruction}</TableCell>
-                              <TableCell className={classes.tableMiddle}>{elem.parameters}</TableCell>
-                              <TableCell className={classes.tableRight}>{elem.state}</TableCell>
-                            </TableRow>
-                    })
-                  }
-                </TableBody>
-              </Table> 
-        }
-      </CardActions>
-    </Card>
+        </CardContent>
+        <CardActions>
+          {
+          
+            isShowing ? <Button size="small" onClick={showTableInCard}>Show More</Button>
+              : 
+                <Table className={classes.wrap}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={classes.tableLeft}>Instruction</TableCell>
+                      <TableCell className={classes.tableMiddle}>Parameters</TableCell>
+                      <TableCell className={classes.tableRight}>State</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      followup.instructions.map((elem, index) => {
+                        return <TableRow key={index}>
+                                <TableCell className={classes.tableLeft}>{elem.instruction}</TableCell>
+                                <TableCell className={classes.tableMiddle}>{elem.parameters}</TableCell>
+                                <TableCell className={classes.tableRight}>{elem.state}</TableCell>
+                              </TableRow>
+                      })
+                    }
+                  </TableBody>
+                </Table> 
+            }
+          </CardActions>
+        </Card>
+      </div>
   );
 }

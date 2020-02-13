@@ -112,7 +112,7 @@ export default function SignIn() {
               color="primary"
               className={classes.submit}
             >
-              <Link href="/dashboard" className={classes.linkButton} variant="body2">
+              <Link href="/dashboard/followup-general" className={classes.linkButton} variant="body2">
                 Sign in
               </Link>
             </Button>

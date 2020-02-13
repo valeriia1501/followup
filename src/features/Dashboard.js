@@ -19,6 +19,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import FollowupsGroup from './followups/FollowupsGroup.js';
 import MessagesSetupGroup from './followup-messages-setup/MessagesSetupGroup.js';
 import AddressesGroup from './list-of-addresses/AddressesGroup.js';
+import FollowupGeneral from './followup-general/FollowupGeneral.js';
 import Charts from './charts/Charts.js';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
@@ -145,6 +146,12 @@ export default function Dashboard() {
           </div>
           <Divider />
           <List>
+            <Link to='/dashboard/followup-general'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='General about followup'/>
+              </ListItem>
+            </Link>
             <Link to='/dashboard/cards'>
               <ListItem button>
                 <ListItemIcon><InboxIcon /></ListItemIcon>
@@ -174,6 +181,9 @@ export default function Dashboard() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
+              <Route path="/dashboard/followup-general">     
+                <FollowupGeneral/>
+              </Route>
               <Route path="/dashboard/cards">     
                 <FollowupsGroup/>
               </Route>
