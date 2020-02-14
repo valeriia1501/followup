@@ -1,6 +1,7 @@
 import React from 'react';
 import ImportantActions from './ImportantActions.js';
 import NewNotifications from './NewNotifications.js';
+import Statistics from './Statistics.js';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -25,6 +26,9 @@ const useStyles = makeStyles({
     borderBottom: '1px solid #cccccc',
     padding: '25px',
     fontSize: 18,
+  },
+  card: {
+    marginBottom: '20px'
   }
 });
 
@@ -37,13 +41,86 @@ const FollowupGeneral = () => {
         "newNotification" : "Followup expired for message X"
     }
 
+    const statisticsArr = {
+      "followupRate": [
+        {
+          "key": "1",
+          "rate": "3"
+        },
+        {
+          "key": "2",
+          "rate": "4"
+        },
+        {
+          "key": "3",
+          "rate": "10"
+        },
+        {
+          "key": "4",
+          "rate": "6"
+        },
+        {
+          "key": "5",
+          "rate": "9"
+        },
+        {
+          "key": "6",
+          "rate": "2"
+        },
+        {
+          "key": "7",
+          "rate": "1"
+        },
+        {
+          "key": "8",
+          "rate": "8"
+        },
+      ],
+      "followupVsDates" : [
+        {
+          "date": "Fri, Feb 1, 2020",
+          "followupAmount" : "4"
+        },
+        {
+          "date": "Fri, Feb 2, 2020",
+          "followupAmount" : "8"
+        },
+        {
+          "date": "Fri, Feb 3, 2020",
+          "followupAmount" : "5"
+        },
+        {
+          "date": "Fri, Feb 4, 2020",
+          "followupAmount" : "3"
+        },
+        {
+          "date": "Fri, Feb 5, 2020",
+          "followupAmount" : "4"
+        },
+        {
+          "date": "Fri, Feb 6, 2020",
+          "followupAmount" : "4"
+        },
+        {
+          "date": "Fri, Feb 7, 2020",
+          "followupAmount" : "8"
+        },
+        {
+          "date": "Fri, Feb 8, 2020",
+          "followupAmount" : "2"
+        },
+      ]
+    }
+      
+
     const dataArr = [
         {
           "from": "v.kovalkovska",
           "subject": "Fill details form",
           "target" : "Nick Bolton",
           "type": "cc",
-          "date": "2020/01/25 00:00",
+          "date": "Fri, Feb 14, 2020 11:21 AM",
+          "nextFollowup": "Fri, Feb 15, 2020 11:21 AM",
           "state": "active",
           "instructions": [
             {
@@ -58,7 +135,8 @@ const FollowupGeneral = () => {
           "subject": "Fill form",
           "target" : "Nick",
           "type": "to",
-          "date": "2019/01/12 00:00",
+          "date": "Thu, Feb 13, 2019 11:21 AM",
+          "nextFollowup": "Thu, Feb 16, 2019 11:21 AM",
           "state": "active",
           "instructions": [
             {
@@ -73,7 +151,8 @@ const FollowupGeneral = () => {
           "subject": "Form",
           "target" : "Ken",
           "type": "bcc",
-          "date": "2020/02/02 00:00",
+          "date": "Thu, Feb 13, 2020 11:10 AM",
+          "nextFollowup": "Thu, Feb 17, 2020 11:10 AM",
           "state": "active",
           "instructions": [
             {
@@ -88,7 +167,8 @@ const FollowupGeneral = () => {
           "subject": "Fill details form",
           "target" : "Nick Bolton",
           "type": "replyto",
-          "date": "2020/01/24 00:00",
+          "date": "Thu, Feb 13, 2019 11:00 AM",
+          "nextFollowup": "Thu, Feb 18, 2020 11:10 AM",
           "state": "active",
           "instructions": [
             {
@@ -100,26 +180,33 @@ const FollowupGeneral = () => {
         }
     ]
 
+    
+
     const classes = useStyles();
     const [userData, setUserData] = React.useState(userDataArr);
     const [data, setData] = React.useState(dataArr);
-    const [sortedData, setSortedData] = React.useState([]);
+    const [statistics, setStatistics] = React.useState(statisticsArr);
 
-    // const sortArr = () => {
-    //     let newData = [...data]
-    //     newData.sort((a, b) => a.date > b.date ? 1 : -1);
-    //     newData.reverse();
-    //     setSortedData(newData)
-    // }
 
-    // sortArr();
+    let sortedDataArr;
+    const sortArr = () => {
+      sortedDataArr = [...data];
+      sortedDataArr.sort((a, b) => Date.parse(a.date) < Date.parse(b.date)  ? 1 : -1);
+    }
+    sortArr();
+
+    const [sortedData, setSortedData] = React.useState(sortedDataArr);
+
+    
+
 
     return (
+        
         <div>
             <ImportantActions userData={userData}/><br/>
             <NewNotifications userData={userData}/>
             
-            <Card>
+            <Card className={classes.card}>
               <div className={classes.titleActiveFollowups}>Active followups</div>
               {
                 data.map((elem, index) => {
@@ -152,10 +239,10 @@ const FollowupGeneral = () => {
               }
             </Card>
 
-            <Card>
+            <Card className={classes.card}>
               <div className={classes.titleActiveFollowups}>Recent followups</div>
               {
-                data.map((elem, index) => {
+                sortedData.map((elem, index) => {
                     if (index < 3) {
                         return <CardContent className={classes.followup}>
                           <Grid container>
@@ -183,7 +270,8 @@ const FollowupGeneral = () => {
                     }
                 })
               }
-            </Card>         
+            </Card>  
+            <Statistics statistics={statistics}/>       
         </div>
     );
 }

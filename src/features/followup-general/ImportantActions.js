@@ -5,9 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles({
-  card: {
-    margin: '20px 0'
-  },
   title: {
     fontSize: 18,
     padding: '25px'
@@ -38,7 +35,7 @@ export default function ImportantActions(props) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
+    <Card>
         <Typography className={classes.title} gutterBottom>
           Welcome, {userData.userName} !
         </Typography>
