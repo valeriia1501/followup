@@ -17,6 +17,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import FollowupsGroup from './followups/FollowupsGroup.js';
+import MessagesSetupGroup from './followup-messages-setup/MessagesSetupGroup.js';
+import AddressesGroup from './list-of-addresses/AddressesGroup.js';
+import FollowupGeneral from './followup-general/FollowupGeneral.js';
+import Charts from './charts/Charts.js';
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
 const drawerWidth = 240;
@@ -82,7 +86,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function App() {
+export default function Dashboard() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -142,25 +146,58 @@ export default function App() {
           </div>
           <Divider />
           <List>
-            <Link to='/cards'>
+            <Link to='/'>
               <ListItem button>
                 <ListItemIcon><InboxIcon /></ListItemIcon>
-                <ListItemText primary='Inbox' />
+                <ListItemText primary='General about followup'/>
               </ListItem>
             </Link>
-            {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+            <Link to='/dashboard/cards'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='Followup' />
               </ListItem>
-            ))} */}
+            </Link>
+            <Link to='/dashboard/messages-setup'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='Messages setup' />
+              </ListItem>
+            </Link>
+            <Link to='/dashboard/list-of-addresses'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='List Of Addresses' />
+              </ListItem>
+            </Link>
+            <Link to='/dashboard/charts'>
+              <ListItem button>
+                <ListItemIcon><InboxIcon /></ListItemIcon>
+                <ListItemText primary='Charts' />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-              <Route path="/cards">     
+              {/* <Route path="/dashboard/followup-general">     
+                <FollowupGeneral/>
+              </Route> */}
+              <Route exact path="/">     
+                <FollowupGeneral/>
+              </Route>
+              <Route path="/dashboard/cards">     
                 <FollowupsGroup/>
+              </Route>
+              <Route path="/dashboard/messages-setup">     
+                <MessagesSetupGroup/>
+              </Route>
+              <Route path="/dashboard/list-of-addresses">     
+                <AddressesGroup/>
+              </Route>
+              <Route path="/dashboard/charts">     
+                <Charts/>
               </Route>
           </Switch>    
         </main>
