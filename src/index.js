@@ -11,7 +11,7 @@ import Subscriptions from './sign-up_sign-in/Subscriptions.js';
 ReactDOM.render(
     <Router>
         <Switch>
-            <Route exact path="/">     
+            {/* <Route exact path="/">     
               <Main/>
             </Route>
             <Route path="/sign-in">     
@@ -25,8 +25,8 @@ ReactDOM.render(
             </Route>
             <Route exact path="/profile/sign-up/subscriptions">     
               <Subscriptions/>
-            </Route>
-            <Route path="/dashboard">     
+            </Route> */}
+            <Route path="/">     
               <Dashboard/>
             </Route>
         </Switch>

@@ -146,7 +146,7 @@ export default function Dashboard() {
           </div>
           <Divider />
           <List>
-            <Link to='/dashboard/followup-general'>
+            <Link to='/'>
               <ListItem button>
                 <ListItemIcon><InboxIcon /></ListItemIcon>
                 <ListItemText primary='General about followup'/>
@@ -181,7 +181,10 @@ export default function Dashboard() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-              <Route path="/dashboard/followup-general">     
+              {/* <Route path="/dashboard/followup-general">     
+                <FollowupGeneral/>
+              </Route> */}
+              <Route exact path="/">     
                 <FollowupGeneral/>
               </Route>
               <Route path="/dashboard/cards">     
